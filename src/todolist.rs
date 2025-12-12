@@ -20,8 +20,15 @@ impl Todolist {
             next: 1
         };
     }
-    fn add_item(input: String){
-        
+    fn add_item(input: String) -> HashMap<u32, Todoitem>{
+        let item = Todoitem{
+            id: 233,
+            deskripsi_tugas: input,
+            status : "Pending".to_string()
+        };
+        let mut baru = HashMap::new();
+        baru.insert(item.id, item);
+        baru
     }
 }
 
