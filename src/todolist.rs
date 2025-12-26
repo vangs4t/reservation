@@ -1,41 +1,68 @@
-use std::{clone, collections::HashMap};
+use core::num;
+use std::vec;
 
-#[derive(Debug, Clone)]
-struct Todoitem{
-    id: u32,
-    deskripsi_tugas: String,
-    status: String
+use regex::Regex;
+
+struct Todolist{
+    todo: Vec<String>
 }
 
-#[derive(Debug, Clone)]
-struct Todolist {
-    item: HashMap<u32, Todoitem>,
-    next: u32
+
+impl Todolist{
+
+fn new(&self) -> Todolist{
+    Todolist { todo: vec![] }
 }
 
-impl Todolist {
-    fn new(){
-        let mut hasil = Todolist{
-            item: HashMap::new(),
-            next: 1
-        };
+fn tambah(&mut self, input: String) -> Vec<String>{
+
+    // disini saya menggunakan perintah regex (r"\w+") untuk menemukan satu atau karakter lebih kata
+    self.todo = Regex::new(r"\w+")
+    .unwrap() 
+    .find_iter(&input)
+    .map(|x| x.as_str().to_string())
+    .collect();
+
+    self.todo.clone()
+}
+
+fn done(&self,number: String) -> Vec<u32>{
+
+    if number.contains("done") {
+
+        let hapus = number[4..].to_string();
+
+        let hasil: Vec<u32> = hapus.split_ascii_whitespace()
+        .map(|x|x.parse().unwrap())
+        .collect();
+
+        hasil
+
+    } else {
+
+        vec![]
+
     }
-    fn add_item(input: String) -> HashMap<u32, Todoitem>{
-        let item = Todoitem{
-            id: 233,
-            deskripsi_tugas: input,
-            status : "Pending".to_string()
-        };
-        let mut baru = HashMap::new();
-        baru.insert(item.id, item);
-        baru
+
+}
+
+fn displays(&self){
+
+    if self.todo.contains("todo") {
+
+        let hapus = self.todo[4..].to_string();
+        let hasil = self.tambah(hapus);
+        let mut num = 1;
+    
+        for value in hasil {
+            println!("{}. {}", num, value);
+            num+=1;
+        }
+
+    } else {
+
+        println!("invalid Command");
+    
+    }
     }
 }
-
-#[derive(Debug, Clone)]
-enum status{
-    Pending,
-    Done
-}
-
-
