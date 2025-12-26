@@ -1,12 +1,20 @@
 use std::{cmp::Ordering, collections::{HashMap, HashSet, btree_map::Values}, io};
 
 use random_number::rand;
+use colored::Colorize;
 
 mod todolist;
 mod product_type;
 
 fn main() {
-    guest_number();
+    let number = 12345;
+    // Menggunakan .strikethrough() pada string yang diformat
+    println!("Nomor yang dicoret: {}", number.to_string().strikethrough());
+
+    // Contoh lain dengan warna dan coretan
+    let old_price = "99.99".strikethrough().red();
+    let new_price = "49.99".green().bold();
+    println!("Harga: {} {}", old_price, new_price);
 }
 
 struct Todolist{
