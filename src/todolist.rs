@@ -1,5 +1,5 @@
 use core::num;
-use std::vec;
+use std::{collections::HashMap, vec};
 
 use regex::Regex;
 
@@ -10,11 +10,7 @@ struct Todolist{
 
 impl Todolist{
 
-fn new(&self) -> Todolist{
-    Todolist { todo: vec![] }
-}
-
-fn tambah(&mut self, input: String){
+fn add_todo(&mut self, input: String){
 
     // disini saya menggunakan perintah regex (r"\w+") untuk menemukan satu atau karakter lebih kata
     self.todo = Regex::new(r"\w+")
@@ -24,12 +20,21 @@ fn tambah(&mut self, input: String){
     .collect();
 }
 
-fn get_number(&self,number: String) -> Vec<u32>{
-        let hasil: Vec<u32> = number.split_ascii_whitespace()
-        .map(|x|x.parse().unwrap())
+fn remove_todo(&mut self, number: String){
+    // Parse indices from input string, ignore parse errors
+    let mut indices: Vec<usize> = number
+        .split_ascii_whitespace()
+        .filter_map(|s| s.parse::<usize>().ok())
         .collect();
 
-        hasil
+    // Remove from highest index to lowest so earlier removals don't shift later indices
+    indices.sort_unstable_by(|a, b| b.cmp(a));
+
+    for idx in indices {
+        if idx < self.todo.len() {
+            self.todo.remove(idx);
+        }
+    }
 }
 
 fn displays(&self){
@@ -43,15 +48,17 @@ fn displays(&self){
 
 
 
+
+
 }
 
 #[test]
 fn dones() {
     let mut hasil = Todolist{
-        todo : vec!["abjad".to_string(), "Kanjut".to_string()]
+        todo : vec!["abjad".to_string(), "Kanjut".to_string(), "alhasil".to_string()]
     };
 
-    println!("{:?}", hasil.get_number("0 1".to_string()));
+    hasil.remove_todo("1 ".to_string());
     hasil.displays();
 }
 
