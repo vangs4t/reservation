@@ -12,7 +12,7 @@ fn main() {
     println!("Nomor yang dicoret: {}", number.to_string().strikethrough());
 
     // Contoh lain dengan warna dan coretan
-    let old_price = "99.99".strikethrough().red();
+    let old_price = "99.99".strikethrough().blue();
     let new_price = "49.99".green().bold();
     println!("Harga: {} {}", old_price, new_price);
 }
