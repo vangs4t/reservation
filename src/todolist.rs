@@ -1,5 +1,5 @@
-use core::num;
-use std::{collections::HashMap, vec};
+
+use std::io::{self, stdin};
 
 use regex::Regex;
 
@@ -9,6 +9,14 @@ struct Todolist{
 
 
 impl Todolist{
+
+fn new() -> Todolist{
+    let results = Todolist{
+        todo : vec![]
+    };
+
+    results
+}
 
 fn add_todo(&mut self, input: String){
 
@@ -55,32 +63,67 @@ fn list(&self){
         }
 }
 
-fn display(&mut self, input: String){
-    if input.contains("todo"){
+fn display(&mut self, input: String) -> bool{
+    // Proses satu perintah saja per pemanggilan (hindari loop tak berujung)
+    if input.contains("todo") {
         let replacement = input.replace("todo", " ");
-        if replacement.contains("add"){
-            let adds = replacement.replace("add", " ");
-            self.add_todo(adds);
+        let normalized = replacement.to_lowercase();
 
-            println!("Add Succes");
-        } else if replacement.contains("done") {
-            let done = replacement.replace("done", " ");
-            self.remove_todo(done);
-
-            println!("Remove Succes");
-        } else {
+        if normalized.contains("add") {
+            if let Some(idx) = normalized.find("add") {
+                // ambil isi setelah kata 'add'
+                let adds = replacement[idx + 3..].trim().to_string();
+                self.add_todo(adds);
+                println!("Add Succes");
+                true
+            } else {
+                false
+            }
+        } else if normalized.contains("done") {
+            if let Some(idx) = normalized.find("done") {
+                // ambil nomor setelah kata 'done'
+                let done = replacement[idx + 4..].trim().to_string();
+                self.remove_todo(done);
+                println!("Remove Succes");
+            }
+            true
+        } else if replacement.trim().eq_ignore_ascii_case("exit") {
+            println!("Semoga tugasnya cepat selesai!");
+            false
+        } else if replacement.trim().is_empty() {
+            // hanya `todo` -> tampilkan daftar
             self.list();
+            true
+        } else {
+            println!("Input tidak valid"); 
+            true
         }
     } else {
         println!("Input tidak valid");
+        true
     }
 }
 
 
-
-
-
 }
+
+pub fn todolist_app(){
+    let mut input = String::new();
+    let mut todolist = Todolist::new();
+    let mut kondisi = true;
+
+    while kondisi {
+        if !input.eq_ignore_ascii_case("exit".trim()) {
+            stdin().read_line(&mut input).unwrap();
+            kondisi = todolist.display(input.clone());
+            input.clear();
+
+        } else {
+            kondisi = false;
+        }
+    }
+}
+
 
 #[test]
 fn dones() {
